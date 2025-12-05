@@ -1,15 +1,18 @@
 "use client";
 
 import { VideoResult } from "@/lib/types";
-import { Play, Star, ExternalLink } from "lucide-react";
+import { Play, Star, ExternalLink, AlertTriangle, Save } from "lucide-react";
 
 interface PlaylistViewProps {
   topic: string;
   videos: VideoResult[];
+  gaps?: string[];
   isLoading: boolean;
+  onSave?: () => void;
+  isSaving?: boolean;
 }
 
-export function PlaylistView({ topic, videos, isLoading }: PlaylistViewProps) {
+export function PlaylistView({ topic, videos, gaps, isLoading, onSave, isSaving }: PlaylistViewProps) {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center h-64 text-gray-400 animate-pulse">
@@ -29,10 +32,45 @@ export function PlaylistView({ topic, videos, isLoading }: PlaylistViewProps) {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6 text-white flex items-center gap-2">
-        <Play className="w-6 h-6 text-green-500 fill-green-500" />
-        Playlist: {topic}
-      </h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+          <Play className="w-6 h-6 text-green-500 fill-green-500" />
+          Playlist: {topic}
+        </h2>
+        
+        {onSave && (
+          <button
+            onClick={onSave}
+            disabled={isSaving}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors disabled:opacity-50"
+          >
+            <Save className="w-4 h-4" />
+            {isSaving ? "Saving..." : "Save to Library"}
+          </button>
+        )}
+      </div>
+
+      {/* Gap Analysis Alert */}
+      {gaps && gaps.length > 0 && (
+        <div className="mb-6 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-yellow-500 mt-0.5" />
+            <div>
+              <h3 className="text-yellow-500 font-semibold mb-1">Missing Concepts Detected</h3>
+              <p className="text-sm text-gray-400 mb-2">
+                Our AI analyzed your playlist and found some key topics might be missing:
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {gaps.map((gap) => (
+                  <span key={gap} className="px-2 py-1 bg-yellow-500/20 text-yellow-200 text-xs rounded-md border border-yellow-500/30">
+                    {gap}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-4">
         {videos.map((video, index) => (

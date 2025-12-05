@@ -11,4 +11,5 @@ export interface VideoResult {
 export interface PlaylistResponse {
   topic: string;
   videos: VideoResult[];
+  gaps?: string[];
 }
