@@ -23,14 +23,13 @@ class GapFillerService:
             ]
         }
 
-    def find_gaps(self, subject: str, current_topics: List[str]) -> List[str]:
+    def find_gaps(self, current_topics: List[str], required_topics: List[str]) -> List[str]:
         """
-        Identifies missing key concepts in the current playlist/syllabus.
+        Identifies missing key concepts by comparing user's current topics against a required list.
         """
-        if subject not in self.knowledge_base:
-            return []
+        if not required_topics or not current_topics:
+            return required_topics or []
 
-        required_topics = self.knowledge_base[subject]
         missing_topics = []
 
         # Encode both lists
@@ -46,8 +45,8 @@ class GapFillerService:
             # Get the best match score
             best_match_score = torch.max(cosine_scores).item()
             
-            # If the best match is below a threshold (e.g., 0.6), it's a gap!
-            if best_match_score < 0.6:
+            # If the best match is below a threshold (e.g., 0.5), it's a gap!
+            if best_match_score < 0.5:
                 print(f"⚠️ Gap Detected: '{req_topic}' (Best match score: {best_match_score:.2f})")
                 missing_topics.append(req_topic)
 

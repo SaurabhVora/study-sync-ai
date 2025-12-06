@@ -27,7 +27,7 @@ class SentimentService:
         # We analyze up to 20 comments per video to keep it fast
         comments_to_analyze = comments[:20]
         
-        results = self.analyzer(comments_to_analyze)
+        results = self.analyzer(comments_to_analyze, truncation=True, max_length=512)
         
         # Calculate score
         # POSITIVE = 1, NEGATIVE = 0

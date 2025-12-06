@@ -1,68 +1,69 @@
 # StudySync AI 🎓🚀
 
-**StudySync AI** is an intelligent study companion that generates personalized video playlists for any topic. It uses AI to analyze YouTube video comments for quality (sentiment analysis) and identifies "knowledge gaps" in the curriculum to suggest prerequisite topics.
+**StudySync AI** is an intelligent study companion that generates personalized video playlists for any topic. It acts as an "AI Tutor" by analyzing thousands of YouTube videos to curate the best learning path for you.
 
 ## ✨ Features
 
 - **🔍 AI-Powered Search**: Generates playlists by analyzing YouTube videos.
-- **🧠 Sentiment Analysis**: Ranks videos based on user sentiment in comments (filters out clickbait).
-- **🧩 Gap Analysis**: Identifies missing prerequisite topics (currently optimized for Operating Systems).
-- **📂 My Library**: Save your favorite playlists to your personal library (stored in Supabase).
-- **🗑️ Manage Content**: Delete playlists you no longer need.
-- **🔐 Authentication**: Secure user login via Supabase.
+- **🧠 Sentiment Analysis**: Ranks videos based on comment quality (filters out clickbait).
+- **🧩 Generative Syllabus**: Uses **Google Gemini 1.5 Flash** to create a dynamic syllabus for _any_ topic (e.g., "Machine Learning", "Quantum Physics").
+- **📚 My Library**: Save your favorite playlists to Supabase.
+- **🎯 Gap Analysis**: Compares the video content against the "Ideal Syllabus" to tell you what you are missing.
 
 ## 🛠️ Tech Stack
 
-### Frontend
-
-- **Next.js 14** (App Router)
-- **TypeScript**
-- **Tailwind CSS** (for styling)
-- **Lucide React** (for icons)
-- **Supabase Auth** (for user management)
-
-### Backend
-
-- **FastAPI** (Python)
-- **Youtube v3 API** (Data fetching)
+- **Python 3.9+**
+- **Streamlit** (UI & Frontend)
+- **Google Gemini API** (Generative AI)
 - **Hugging Face Transformers** (Sentiment Analysis)
-- **Sentence Transformers** (Gap Analysis embeddings)
-- **Supabase** (Database & Storage)
+- **Sentence Transformers** (Semantic Similarity)
+- **Supabase** (Database)
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js & npm
-- Python 3.9+
-- Supabase Account
-- Google Cloud Project (for YouTube Data API)
+- Python 3.9+ installed.
+- Supabase Account.
+- Google AI Studio API Key.
 
-### 1. Backend Setup
+### Installation
 
-```bash
-cd backend
-python -m venv venv
-# Windows
-.\venv\Scripts\activate
-# Mac/Linux
-source venv/bin/activate
+1.  **Clone the repo**
 
-pip install -r requirements.txt
-uvicorn main:app --reload
-```
+    ```bash
+    git clone https://github.com/yourusername/study-sync-ai.git
+    cd study-sync-ai
+    ```
 
-### 2. Frontend Setup
+2.  **Setup Backend**
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
+    ```bash
+    cd backend
+    python -m venv venv
+    # Windows
+    .\venv\Scripts\activate
+    # Mac/Linux
+    source venv/bin/activate
 
-### 3. Environment Variables
+    pip install -r requirements.txt
+    ```
 
-Create `.env` in `backend/` and `.env.local` in `frontend/` with your API keys (Supabase, YouTube, etc.).
+3.  **Environment Variables**
+    Create a `.env` file in `backend/` with the following:
+
+    ```env
+    SUPABASE_URL=your_supabase_url
+    SUPABASE_KEY=your_supabase_anon_key
+    YOUTUBE_API_KEY=your_youtube_api_key
+    GEMINI_API_KEY=your_gemini_api_key
+    ```
+
+4.  **Run the App**
+    Double-click `start_app.bat` (Windows) or run:
+    ```bash
+    streamlit run streamlit_app.py
+    ```
 
 ## 📸 Screenshots
 
@@ -70,7 +71,7 @@ _(Add your screenshots here)_
 
 ## 🤝 Contributing
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Pull requests are welcome.
 
 ## 📄 License
 
