@@ -13,14 +13,14 @@ class GeminiSyllabusService:
             genai.configure(api_key=GEMINI_API_KEY)
             self.model = genai.GenerativeModel('gemini-2.0-flash')
         else:
-            print("⚠️ GEMINI_API_KEY not found. Syllabus generation will be disabled.")
+            print("Warning: GEMINI_API_KEY not found. Syllabus generation will be disabled.")
             self.model = None
 
     def generate_syllabus(self, topic: str) -> List[str]:
         if not self.model:
             return []
 
-        print(f"🧠 Asking Gemini for syllabus on: {topic}")
+        print(f"Asking Gemini for syllabus on: {topic}")
         
         prompt = (
             f"I am building a study playlist for the topic: '{topic}'. "
@@ -36,7 +36,7 @@ class GeminiSyllabusService:
             topics = [t.strip() for t in text.split(',') if t.strip()]
             return topics
         except Exception as e:
-            print(f"❌ Gemini Error: {e}")
+            print(f"Error: Gemini Error: {e}")
             return []
 
 gemini_service = GeminiSyllabusService()

@@ -4,10 +4,10 @@ from typing import List
 
 class SentimentService:
     def __init__(self):
-        print("🧠 Loading AI Sentiment Model...")
+        print("Loading AI Sentiment Model...")
         # Check if GPU is available
         self.device = 0 if torch.cuda.is_available() else -1
-        print(f"🚀 AI running on: {'GPU (RTX 3050)' if self.device == 0 else 'CPU'}")
+        print(f"AI running on: {'GPU (RTX 3050)' if self.device == 0 else 'CPU'}")
         
         # Load pre-trained sentiment analysis model
         self.analyzer = pipeline(

@@ -4,24 +4,10 @@ import torch
 
 class GapFillerService:
     def __init__(self):
-        print("🧩 Loading Gap Filler AI Model...")
+        print("Loading Gap Filler AI Model...")
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         # We use a lightweight model for semantic similarity
         self.model = SentenceTransformer('all-MiniLM-L6-v2', device=self.device)
-        
-        # Knowledge Base: Ideal sub-topics for known subjects
-        # In a real app, this would come from a database or LLM generation
-        self.knowledge_base = {
-            "Operating Systems": [
-                "Process Management", "CPU Scheduling", "Deadlocks", 
-                "Memory Management", "Virtual Memory", "File Systems", 
-                "I/O Systems", "Security and Protection"
-            ],
-            "Data Structures": [
-                "Arrays", "Linked Lists", "Stacks", "Queues", 
-                "Trees", "Graphs", "Hashing", "Sorting Algorithms"
-            ]
-        }
 
     def find_gaps(self, current_topics: List[str], required_topics: List[str]) -> List[str]:
         """
@@ -47,7 +33,7 @@ class GapFillerService:
             
             # If the best match is below a threshold (e.g., 0.5), it's a gap!
             if best_match_score < 0.5:
-                print(f"⚠️ Gap Detected: '{req_topic}' (Best match score: {best_match_score:.2f})")
+                print(f"Gap Detected: '{req_topic}' (Best match score: {best_match_score:.2f})")
                 missing_topics.append(req_topic)
 
         return missing_topics

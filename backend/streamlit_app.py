@@ -8,11 +8,141 @@ load_dotenv()
 
 # Set Page Config (Must be first)
 st.set_page_config(
-    page_title="StudySync AI",
+    page_title="StudySync AI - Your Intelligent Study Companion",
     page_icon="🎓",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
+
+# Inject Premium Design System
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;600&display=swap');
+
+/* Apply font families */
+html, body, [class*="css"], .stMarkdown {
+    font-family: 'Inter', sans-serif !important;
+}
+h1, h2, h3, h4, h5, h6, .gradient-title {
+    font-family: 'Outfit', sans-serif !important;
+    font-weight: 800 !important;
+}
+
+/* Background gradient and styling */
+.stApp {
+    background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0f172a 70%, #020617 100%) !important;
+    color: #f8fafc !important;
+}
+
+/* Main title styling */
+.gradient-title {
+    background: linear-gradient(135deg, #c084fc 0%, #6366f1 50%, #38bdf8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 3.5rem !important;
+    text-align: center;
+    margin-bottom: 0.2rem !important;
+    letter-spacing: -1.5px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #94a3b8;
+    font-size: 1.25rem;
+    margin-bottom: 3rem;
+    font-weight: 300;
+}
+
+/* Hide sidebar and streamline UI */
+section[data-testid="stSidebar"] {
+    display: none !important;
+}
+
+/* Glassmorphism containers and inputs */
+div[data-baseweb="input"] {
+    background-color: rgba(30, 41, 59, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 14px !important;
+    transition: all 0.3s ease !important;
+    padding: 4px 8px !important;
+}
+
+div[data-baseweb="input"]:focus-within {
+    border-color: #818cf8 !important;
+    box-shadow: 0 0 20px rgba(129, 140, 248, 0.25) !important;
+}
+
+/* Premium Primary Buttons */
+button[kind="primary"] {
+    background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%) !important;
+    border: none !important;
+    border-radius: 14px !important;
+    padding: 12px 32px !important;
+    color: white !important;
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    font-family: 'Outfit', sans-serif !important;
+    box-shadow: 0 4px 20px rgba(168, 85, 247, 0.35) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    width: 100% !important;
+}
+
+button[kind="primary"]:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(168, 85, 247, 0.5) !important;
+}
+
+/* Custom styled cards for video containers */
+div[data-testid="stForm"] {
+    background: rgba(30, 41, 59, 0.45) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 20px !important;
+    padding: 30px !important;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25) !important;
+}
+
+.video-container {
+    background: rgba(30, 41, 59, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-radius: 16px !important;
+    padding: 20px !important;
+    margin-bottom: 20px !important;
+    transition: all 0.3s ease !important;
+    backdrop-filter: blur(12px);
+}
+
+.video-container:hover {
+    background: rgba(30, 41, 59, 0.5) !important;
+    border-color: rgba(129, 140, 248, 0.3) !important;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(99, 102, 241, 0.15) !important;
+}
+
+/* Info and success boxes styling */
+div[data-testid="stNotification"] {
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(8px);
+}
+
+/* Badge styling for score representation */
+.badge-container {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+.score-badge {
+    background: rgba(129, 140, 248, 0.1);
+    color: #818cf8;
+    border: 1px solid rgba(129, 140, 248, 0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-block;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # Import Services (Cached to prevent reloading models)
 @st.cache_resource
@@ -20,105 +150,58 @@ def load_services():
     from app.services.youtube import youtube_service
     from app.services.ai_sentiment import sentiment_service
     from app.services.gap_filler import gap_filler_service
-    from app.services.gemini_syllabus import gemini_service
-    from app.core.supabase import supabase
-    return youtube_service, sentiment_service, gap_filler_service, gemini_service, supabase
+    from app.services.gemini_service import gemini_service
+    return youtube_service, sentiment_service, gap_filler_service, gemini_service
 
 # Load services
 try:
-    with st.spinner("🚀 Loading AI Models... (This happens only once)"):
-        youtube_service, sentiment_service, gap_filler_service, gemini_service, supabase = load_services()
+    with st.spinner("🚀 Initializing StudySync AI Models... (This happens only once)"):
+        from app.services.youtube import youtube_service
+        from app.services.ai_sentiment import sentiment_service
+        from app.services.gap_filler import gap_filler_service
+        from app.services.gemini_syllabus import gemini_service
 except Exception as e:
     st.error(f"Failed to load services: {e}")
     st.stop()
 
-# --- Sidebar: User & Library ---
-with st.sidebar:
-    st.title("🎓 StudySync AI")
-    
-    # Simple Auth
-    if 'user' not in st.session_state:
-        st.session_state.user = None
-
-    if not st.session_state.user:
-        with st.expander("🔐 Login / Signup", expanded=True):
-            email = st.text_input("Email")
-            password = st.text_input("Password", type="password")
-            action = st.radio("Action", ["Login", "Sign Up"])
-            
-            if st.button("Submit"):
-                try:
-                    if action == "Login":
-                        res = supabase.auth.sign_in_with_password({"email": email, "password": password})
-                    else:
-                        res = supabase.auth.sign_up({"email": email, "password": password})
-                    
-                    if res.user:
-                        st.session_state.user = res.user
-                        st.success(f"Welcome, {email}!")
-                        st.rerun()
-                except Exception as e:
-                    st.error(str(e))
-    else:
-        st.write(f"👤 **{st.session_state.user.email}**")
-        if st.button("Logout"):
-            supabase.auth.sign_out()
-            st.session_state.user = None
-            st.rerun()
-
-        st.divider()
-        st.subheader("📚 My Library")
-
-        # Fetch Playlists
-        try:
-            res = supabase.table("playlists").select("*").eq("user_id", st.session_state.user.id).order("created_at", desc=True).execute()
-            saved_playlists = res.data
-            
-            if not saved_playlists:
-                st.caption("No saved playlists yet.")
-            
-            for pl in saved_playlists:
-                col1, col2 = st.columns([0.8, 0.2])
-                if col1.button(pl['name'], key=f"load_{pl['id']}"):
-                    st.session_state.search_query = pl['name']
-                    st.rerun()
-                if col2.button("🗑️", key=f"del_{pl['id']}"):
-                    supabase.table("playlist_items").delete().eq("playlist_id", pl['id']).execute()
-                    supabase.table("playlists").delete().eq("id", pl['id']).execute()
-                    st.rerun()
-
-        except Exception as e:
-            st.error(f"Error loading library: {e}")
-
-# --- Main Content ---
-st.title("Resource Aggregator")
-st.caption("Powered by Gemini 1.5 Flash & Semantic Search")
+# --- Header Area ---
+st.markdown('<div class="gradient-title">StudySync AI</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">Your Login-Free, Intelligent AI Study Playlist Generator</div>', unsafe_allow_html=True)
 
 if 'search_query' not in st.session_state:
     st.session_state.search_query = "Machine Learning"
 
-# Search Form
-with st.form("search_form"):
-    topic_input = st.text_input("Enter a topic to learn:", value=st.session_state.search_query)
-    submitted = st.form_submit_button("Generative Study Plan", type="primary")
+# --- Main Search Section (Centered via columns) ---
+col_space1, col_form, col_space2 = st.columns([0.15, 0.7, 0.15])
 
-if submitted and topic_input:
-    st.session_state.search_query = topic_input
-    topic = topic_input
+with col_form:
+    with st.form("search_form"):
+        topic_input = st.text_input("What do you want to learn today?", value=st.session_state.search_query, placeholder="Enter any topic e.g. Quantum Computing, React JS, World War II")
+        st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
+        submitted = st.form_submit_button("Generative Study Plan", type="primary")
 
-    with st.status(f"🔍 Analyzing '{topic}'...", expanded=True) as status:
-        
+if (submitted and topic_input) or ('auto_run_query' in st.session_state and st.session_state.auto_run_query):
+    # Retrieve topic
+    if submitted and topic_input:
+        st.session_state.search_query = topic_input
+        topic = topic_input
+    else:
+        topic = st.session_state.auto_run_query
+        st.session_state.auto_run_query = None # clear
+
+    st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
+    
+    with st.status(f"🔍 Curating plan for '{topic}'...", expanded=True) as status:
         # 1. Gemini Syllabus
-        status.write("🧠 Consulting Gemini for syllabus...")
+        status.write("🧠 Consulting Gemini AI for optimal syllabus...")
         required_topics = gemini_service.generate_syllabus(topic)
-        st.write(f"**Target Syllabus:** {', '.join(required_topics)}")
         
         # 2. YouTube Search
-        status.write("🎥 Searching YouTube...")
+        status.write("🎥 Searching YouTube for high-quality content...")
         raw_videos = youtube_service.search_videos(topic, max_results=10)
         
         # 3. Process Videos (Sentiment + Gaps)
-        status.write("🤖 Analyzing Sentiment & Gaps...")
+        status.write("🤖 Analyzing video reviews & content coverage...")
         processed_videos = []
         video_titles = []
         
@@ -140,68 +223,57 @@ if submitted and topic_input:
         # Gap Analysis
         gaps = gap_filler_service.find_gaps(video_titles, required_topics)
         
-        status.update(label="✅ Analysis Complete!", state="complete", expanded=False)
+        status.update(label="✅ Plan successfully generated!", state="complete", expanded=False)
 
-    # --- Display Results ---
-    
-    # Save Button
-    if st.session_state.user:
-        col_head, col_save = st.columns([0.8, 0.2])
-        if col_save.button("💾 Save to Library"):
-            try:
-                # 1. Insert Playlist
-                pl_data = {
-                    "user_id": st.session_state.user.id,
-                    "name": topic,
-                    "description": f"AI Playlist for {topic}"
-                }
-                pl_res = supabase.table("playlists").insert(pl_data).execute()
-                pl_id = pl_res.data[0]['id']
-                
-                # 2. Insert Items
-                items = []
-                for i, v in enumerate(processed_videos[:5]):
-                     items.append({
-                        "playlist_id": pl_id,
-                        "video_id": v['video_id'],
-                        "title": v['title'],
-                        "url": f"https://www.youtube.com/watch?v={v['video_id']}",
-                        "position": i
-                    })
-                supabase.table("playlist_items").insert(items).execute()
-                st.toast("Playlist Saved Successfully!", icon="✅")
-                st.rerun() # Refresh sidebar
-            except Exception as e:
-                st.error(f"Save failed: {e}")
+    # --- Render Targets ---
+    if required_topics:
+        st.markdown(f"### 🎯 Recommended Learning Path for **{topic}**")
+        st.write(f"**Target syllabus concepts:** {', '.join(required_topics)}")
+        st.markdown("<div style='height: 15px;'></div>", unsafe_allow_html=True)
 
-    # Layout: 2 Columns
-    left_col, right_col = st.columns([0.7, 0.3])
+    # Layout: 2 Columns (Videos Left, Gaps Right)
+    left_col, right_col = st.columns([0.65, 0.35])
     
     with left_col:
-        st.subheader(f"📺 Top Videos for {topic}")
-        for vid in processed_videos[:5]:
-            with st.container(border=True):
-                c1, c2 = st.columns([0.4, 0.6])
-                c1.image(vid['thumbnail'], use_container_width=True)
-                c2.markdown(f"**[{vid['title']}](https://www.youtube.com/watch?v={vid['video_id']})**")
-                c2.caption(f"Channel: {vid['channel_title']}")
-                
-                # AI Badge
-                score = vid['ai_score']
-                color = "green" if score > 70 else "orange" if score > 50 else "red"
-                c2.markdown(f"🧠 AI Score: :{color}[**{score:.1f}**]")
-                with st.expander("Description"):
-                    st.text(vid['description'][:200] + "...")
+        st.markdown("### 📺 Handpicked Video Recommendations")
+        if not processed_videos:
+            st.warning("No videos could be retrieved for this topic. Please check your YouTube API Key or quota.")
+        else:
+            for vid in processed_videos[:5]:
+                # Wrap each video inside our custom styled CSS video-container
+                with st.container():
+                    st.markdown('<div class="video-container">', unsafe_allow_html=True)
+                    c1, c2 = st.columns([0.35, 0.65])
+                    c1.image(vid['thumbnail'], use_container_width=True)
+                    
+                    c2.markdown(f"#### **[{vid['title']}](https://www.youtube.com/watch?v={vid['video_id']})**")
+                    c2.markdown(f"👤 *Channel:* `{vid['channel_title']}`")
+                    
+                    # Custom Badged AI Score
+                    score = vid['ai_score']
+                    color = "#10b981" if score > 70 else "#f59e0b" if score > 50 else "#ef4444"
+                    c2.markdown(f"""
+                    <div class="badge-container">
+                        <span class="score-badge" style="color: {color}; border-color: {color}aa; background: {color}1a;">
+                            🧠 AI Score: {score:.1f}%
+                        </span>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    with c2.expander("Show Description"):
+                        st.caption(vid['description'][:300] + ("..." if len(vid['description']) > 300 else ""))
+                    st.markdown('</div>', unsafe_allow_html=True)
 
     with right_col:
-        st.subheader("🧩 Knowledge Gaps")
+        st.markdown("### 🧩 Syllabus Concept Coverage")
         if gaps:
-            st.warning(f"These concepts might be missing from the videos above:")
+            st.warning("Concept Gaps Detected:")
+            st.info("The recommended videos above might not cover the following prerequisites thoroughly. We recommend searching them separately:")
             for g in gaps:
-                st.info(f"**{g}**")
-                if st.button(f"Find '{g}'", key=f"gap_{g}"):
+                # Button to automatically trigger search for that gap
+                if st.button(f"🔍 Learn Concept: {g}", key=f"gap_{g}", use_container_width=True):
+                    st.session_state.auto_run_query = g
                     st.session_state.search_query = g
                     st.rerun()
         else:
-            st.success("Reference coverage looks great!")
-
+            st.success("Reference coverage is excellent! The top recommendations cover all target topics well.")
